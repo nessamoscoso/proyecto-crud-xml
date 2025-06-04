@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Productos</title>
+</head>
+<body>
+  <h1>Gestión de Productos</h1>
+  <form id="form">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <input type="number" id="precio" placeholder="Precio" required>
+    <label><input type="checkbox" id="destacado"> Destacado</label>
+    <button type="submit">Agregar</button>
+  </form>
+  <ul id="lista"></ul>
+  <button onclick="generarInforme()">Generar Informe XML</button>
+  <pre id="xml-output"></pre>
+
+  <script src="script.js"></script>
+</body>
+</html>
