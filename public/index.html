@@ -1,21 +1,119 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>CRUD Productos</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CRUD de Productos con XML</title>
 </head>
 <body>
   <h1>Gestión de Productos</h1>
-  <form id="form">
-    <input type="text" id="nombre" placeholder="Nombre" required>
-    <input type="number" id="precio" placeholder="Precio" required>
-    <label><input type="checkbox" id="destacado"> Destacado</label>
+
+  <form id="formulario">
+    <input type="text" id="nombre" placeholder="Nombre" required />
+    <input type="text" id="categoria" placeholder="Categoría" required />
+    <input type="number" id="precio" placeholder="Precio" required />
+    <input type="number" id="stock" placeholder="Stock" required />
     <button type="submit">Agregar</button>
   </form>
-  <ul id="lista"></ul>
-  <button onclick="generarInforme()">Generar Informe XML</button>
-  <pre id="xml-output"></pre>
 
-  <script src="script.js"></script>
+  <h2>Productos</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="lista"></tbody>
+  </table>
+
+  <br/>
+  <button onclick="verInforme()">Ver Informe XML</button>
+
+  <script>
+    const formulario = document.getElementById('formulario');
+    const lista = document.getElementById('lista');
+    let modoEdicion = false;
+    let idEditar = null;
+
+    async function cargarProductos() {
+      const res = await fetch('/productos');
+      const datos = await res.json();
+      lista.innerHTML = '';
+      datos.forEach(p => {
+        lista.innerHTML += `
+          <tr>
+            <td>${p.nombre}</td>
+            <td>${p.categoria}</td>
+            <td>${p.precio}</td>
+            <td>${p.stock}</td>
+            <td>
+              <button onclick="editar(${p.id})">Editar</button>
+              <button onclick="eliminar(${p.id})">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    formulario.addEventListener('submit', async e => {
+      e.preventDefault();
+      const datos = {
+        nombre: formulario.nombre.value,
+        categoria: formulario.categoria.value,
+        precio: Number(formulario.precio.value),
+        stock: Number(formulario.stock.value)
+      };
+
+      if (modoEdicion) {
+        await fetch(`/productos/${idEditar}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos)
+        });
+        modoEdicion = false;
+        idEditar = null;
+        formulario.querySelector('button').textContent = 'Agregar';
+      } else {
+        await fetch('/productos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos)
+        });
+      }
+
+      formulario.reset();
+      cargarProductos();
+    });
+
+    async function editar(id) {
+      const res = await fetch('/productos');
+      const productos = await res.json();
+      const prod = productos.find(p => p.id === id);
+      formulario.nombre.value = prod.nombre;
+      formulario.categoria.value = prod.categoria;
+      formulario.precio.value = prod.precio;
+      formulario.stock.value = prod.stock;
+      modoEdicion = true;
+      idEditar = id;
+      formulario.querySelector('button').textContent = 'Actualizar';
+    }
+
+    async function eliminar(id) {
+      await fetch(`/productos/${id}`, { method: 'DELETE' });
+      cargarProductos();
+    }
+
+    function verInforme() {
+      window.open('/informe', '_blank');
+    }
+
+    cargarProductos();
+  </script>
 </body>
 </html>
+
