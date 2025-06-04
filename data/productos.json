@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": 1,
+    "nombre": "Camisa",
+    "categoria": "Ropa",
+    "precio": 25,
+    "stock": 15
+  }
+]

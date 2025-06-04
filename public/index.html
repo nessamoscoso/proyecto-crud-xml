@@ -3,15 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <title>CRUD Productos</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f4f4f4;
+    }
+    form, ul {
+      margin-bottom: 2rem;
+    }
+    li {
+      background: white;
+      margin: 0.5rem 0;
+      padding: 1rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .acciones button {
+      margin-left: 0.5rem;
+    }
+  </style>
 </head>
 <body>
   <h1>Gestión de Productos</h1>
-  <form id="form">
+
+ <form id="form">
     <input type="text" id="nombre" placeholder="Nombre" required>
     <input type="number" id="precio" placeholder="Precio" required>
+    <input type="number" id="stock" placeholder="Stock" required>
+    <input type="text" id="categoria" placeholder="Categoría" required>
     <label><input type="checkbox" id="destacado"> Destacado</label>
     <button type="submit">Agregar</button>
   </form>
+  
+
   <ul id="lista"></ul>
   <button onclick="generarInforme()">Generar Informe XML</button>
   <pre id="xml-output"></pre>
